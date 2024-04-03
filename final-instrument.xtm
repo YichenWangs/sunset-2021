@@ -1,0 +1,245 @@
+(sys:load "examples/sharedsystem/audiosetup.xtm")
+(sys:load "examples/sharedsystem/setup.xtm")
+(sys:load "libs/external/instruments_ext.xtm")
+
+; preload drum samples
+(make-instrument samp1 sampler)
+
+; additional drum samples are given here in case performers want to use
+(sampler-populate-slot samp1 "assets/samples/808/36.aif" *gm-kick-2* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/37.aif" *gm-side-stick* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/38.aif" *gm-snare* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/39.aif" *gm-hand-clap* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/40.aif" *gm-snare-2* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/41.aif" *gm-low-floor-tom* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/42.aif" *gm-closed-hi-hat* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/43.aif" *gm-hi-floor-tom* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/44.aif" *gm-pedal-hi-hat* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/45.aif" *gm-low-tom* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/46.aif" *gm-open-hi-hat* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/47.aif" *gm-low-mid-tom* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/48.aif" *gm-hi-mid-tom* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/49.aif" *gm-crash* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/50.aif" *gm-hi-tom* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/51.aif" *gm-ride* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/52.aif" *gm-chinese* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/53.aif" *gm-ride-bell* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/54.aif" *gm-tambourine* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/55.aif" *gm-splash* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/56.aif" *gm-cowbell* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/57.aif" *gm-crash-2* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/58.aif" *gm-vibraslap* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/59.aif" *gm-ride-2* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/60.aif" *gm-hi-bongo* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/61.aif" *gm-low-bongo* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/62.aif" *gm-mute-hi-conga* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/63.aif" *gm-hi-conga* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/64.aif" *gm-low-conga* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/65.aif" *gm-hi-timbale* 0 0 0 1)
+(sampler-populate-slot samp1 "assets/samples/808/66.aif" *gm-low-timbale* 0 0 0 1)
+
+; set up the ambient's temp 
+(*metro* 'set-tempo 20)
+
+(analogue-load-preset syn2 "examples/sharedsystem/presets/keys1.xtmpreset")
+(analogue-load-preset syn3 "examples/sharedsystem/presets/organ1.xtmpreset")
+(define h1 (holder))
+(set! *scale* (pc:scale 0 'ionian))
+
+; ****************************Name abbr****************************************
+; Below is an example of how the instruments can be used collaboratively in a performance
+; Yichen - Y - in charge of visuals and some sound
+; George - G - in charge of drum patterns throughout the performance, with additional assistance for other
+; Caleb - C - in charge of appoggiatura, rhythms and live coding music
+
+; Do you want to say sth to audience?
+(io:osc:send (now) (cons "localhost" 12000) "/test/msg"  "lets start" )
+
+; Yichen - this is used for testing syn1 sound
+(:| test 4 0 (play syn1 @1 100 dur) `(60))
+(set_osc syn1 1 0.8 PARAM_SAW 1.0 0.0 0.0)
+(set_filter syn1 1000.0 0.1 1.0 10 0.0 0.0 0.0)
+(set_amp_env syn1 1.0 1000.0 0.3 100.0)
+; (set_delay syn1 0.3 (/ 1000.0 5) (/ 1000.0 5) 0.9 18000.0 0.0)
+(set_delay syn1 0.1 (/ 1000.0 5) (/ 1000.0 5) 0.5 18000.0 0.0)
+(set_reverb syn1 0.8 0.8 85 0.1)
+(set_main syn1 3 2.5 0.1 LEGATO_OFF)
+
+; ##########################Phase One: The Opening#############################
+; visual state: image - pixels - disolve
+
+; Y trun on the base
+(:> note-1 1 0 (play syn1 @1 70 dur) `(f4))
+(:> note-2 4 1 (play syn1 @1 70 dur) `(d#4 f3))
+(:> note-3 4 2 (play syn1 @1 70 dur) `(f3))
+(:> note-4 4 3 (play syn1 @1 70 dur) `(g#4))
+(:> note-5 4 4 (play syn1 @1 70 dur) `(c4))
+(:> note-6 8 5 (play syn1 @1 70 dur) `(c#4))
+
+
+; ambients organ set up
+(set_reverb syn3 0.8 0.9 100 0.1)
+
+; G ambients equal to base
+(:> ambi-same 3 0 (play syn3 @1 100 dur) 
+  (list (hold h1 1 
+              (nof 1 
+                  (random `(f3 d#3 f2 g#3 c3 g#2 c#3))))))
+
+; Y random organ rhythm
+(:> ambi-organ 2 1/2 (play syn3 (rel 50 @1) (cosr 40 20 7/3) dur) 
+  (list (hold h1 2 
+              (nof 2
+                   (random 5)))))
+
+; C can do some real time music tuning here :)
+
+; ##########################Transition 1#############################
+; visual state: drum
+
+; G add some low drum kicks
+(:> drum-base 1 0 (play samp1 @1 90 dur) `( *gm-kick-2*  *gm-kick-2*))
+
+; ##########################Phase Two: Building up ##################
+; visual state: drum&dynamic
+
+; G change drum patterns (more intense one)
+(:> kick-phase-2 1 0 (play samp1 @1 80 dur) `( (*gm-kick-2* (_ *gm-kick-2* ) (_ *gm-kick-2*) _  )))
+(:> kick-kit-phase-2 1 0 (play samp1 @1 70 dur) `( _ (*gm-snare-2* _ 
+) _ (*gm-snare-2* _)))
+
+; turn off the drum-base
+(:| drum-base 1 0 (play samp1 @1 90 dur) `( *gm-kick-2*  *gm-kick-2*))
+
+; (:| kick-kit-phase-2 1 0 (play kit @1 60 dur) `( _ (35 _ ) _ (35 _)) ) )
+
+; C&Y play around appoggiatura
+; C can do some real time music tuning here :)
+(set_reverb syn2 0.9 0.7 60 0.2)
+
+; appoggiatura - DO NOT PLAY ALL TOGETHER - just play some
+(:| lead-1 2 0 (play syn2 @1 90 dur) `((c6 (d#6)) _ _ _ _ (d#6 (f6)) _ _ _ _ ))
+
+(:| lead-3 1 1/2 (play syn2 @1 100 dur) `((a#5 (c6)) _ _ _ _ (g5 (g#5)) _ _ _ _  )))
+
+(:| lead-2 1 1/2 (play syn2 @1 100 dur) `((d#6 (f6)) _ _ _ _ ))
+
+(:| lead-4 1 1 (play syn2 @1 80 dur) `((g5 (g#5)) _ _ _ _  ))
+
+; ##########################Transition 2#############################
+
+; C or G add up main rhythms
+(:> up 8 0 (play syn2 @1 80 dur) (list #(c5 d#4 g#4) #(g4 a#4 d#5) #(d#4 g#4 c5) #(f5 a4 c5) #(f5 a#4 c#5) #(f5 g#4 c5) (orb LC 2 #(d#5 g4 a#4 a#5) #(d#5 g4 a#4 c5))  #(g5 a#4 d#5)))
+
+(:> ambulance 8 0 (play syn1 @1 80 dur) `(_ _ _ _ _ (f6 f6 f6 f6 f6 f6 f6 f6) (d#6 d#6 d#6 d#6 d#6 d#6 d#6 d#6) (g6 g6 g6 g6 g6 g6 g6 g6) ))
+
+(:| up 8 0 (play syn2 @1 100 dur) (list #(c5 d#4 g#4) #(g4 a#4 d#5) #(d#4 g#4 c5) #(f5 a4 c5) #(f5 a#4 c#5) #(f5 g#4 c5) (orb LC 2 #(d#5 g4 a#4 a#5) #(d#5 g4 a#4 c5))  #(g5 a#4 d#5)))
+
+(:| ambulance 8 0 (play syn1 @1 120 dur) `(_ _ _ _ _ (f6 f6 f6 f6 f6 f6 f6 f6) (d#6 d#6 d#6 d#6 d#6 d#6 d#6 d#6) (g6 g6 g6 g6 g6 g6 g6 g6) ))
+
+; ##########################Phase Three: EPIC #############################
+; visual state: dynamic & drum&dynamic &drum
+; send the osc message to change the color of visuals: 0,1 or 2
+(io:osc:send (now) (cons "localhost" 12000) "/who" 2)
+
+; G change more drum patterns! (really intense ones)
+(:> kick-phase-3 1 0 (play samp1 @1 70 dur) `( _ (*gm-hand-clap* (_ *gm-crash*)) _ (*gm-hand-clap* _ )))
+(:> kick-kit-phase-3 1 0 (play samp1 @1 70 dur) `( (*gm-snare-2* (*gm-snare-2* *gm-snare-2*)) _ (*gm-snare-2* (*gm-snare-2* *gm-snare-2*)) _  ))
+; stop the kick-phase-2
+(:| kick-phase-2 1 0 (play samp1 @1 100 dur) `( (*gm-kick-2* (_ *gm-kick-2* ) (_ *gm-kick-2*) _  )))
+(:| kick-kit-phase-2 1 0 (play samp1 @1 80 dur) `( _ (*gm-snare-2* _ 
+) _ (*gm-snare-2* _)))
+
+; C&Y play around with the transition 2
+
+
+; G give a crash sound after c&Y add more sound
+; stop  a crash sound when tring to cool down (or only let it play for several loops)
+(:| crashes 4 0 (play samp1 @1 @2 dur) `(  *gm-crash*  *gm-crash*) `(80 70))
+
+
+; ##########################Phase Two: Cooling down #############################
+; visual state: pixels & shrink 
+
+; G turning down drum patterns
+(:> kick-phase-2 1 0 (play samp1 @1 100 dur) `( (*gm-kick-2* (_ *gm-kick-2* ) (_ *gm-kick-2*) _  )))
+(:> kick-kit-phase-2 1 0 (play samp1 @1 80 dur) `( _ (*gm-snare-2* _ 
+) _ (*gm-snare-2* _)))
+; stop kick-kit-phase-3
+(:| kick-phase-3 1 0 (play samp1 @1 80 dur) `( _ (*gm-hand-clap* (_ *gm-crash*)) _ (*gm-hand-clap* _ )))
+(:| kick-kit-phase-3 1 0 (play samp1 @1 100 dur) `( (*gm-snare-2* (*gm-snare-2* *gm-snare-2*)) _ (*gm-snare-2* (*gm-snare-2* *gm-snare-2*)) _  ))
+
+
+; G turning on/off drum patterns
+(:> drum-base 1 0 (play samp1 @1 100 dur) `( *gm-kick-2*  *gm-kick-2*))
+
+(:| kick-phase-2 1 0 (play samp1 @1 100 dur) `( (*gm-kick-2* (_ *gm-kick-2* ) (_ *gm-kick-2*) _  )))
+(:| kick-kit-phase-2 1 0 (play samp1 @1 80 dur) `( _ (*gm-snare-2* _ 
+) _ (*gm-snare-2* _)))
+
+; after a while - turn off
+(:| drum-base 1 0 (play samp1 @1 100 dur) `( *gm-kick-2*  *gm-kick-2*))
+
+
+; Y/C/G - turn off all, Y maybe do some, but mainly in charge of visuals
+(:| ambi-same 3 0 (play syn3 @1 80 dur) 
+  (list (hold h1 1 
+              (nof 1 
+                  (random `(f3 d#3 f2 g#3 c3 g#2 c#3))))))
+
+(:| ambi-organ 2 1/2 (play syn3 (rel 60 @1) (cosr 40 20 7/3) dur) 
+  (list (hold h1 2 
+              (nof 2
+                   (random 5)))))
+
+(:| note-1 1 0 (play syn1 @1 100 dur) `(f4))
+(:| note-2 4 1 (play syn1 @1 100 dur) `(d#4 f3))
+
+(:| note-3 4 2 (play syn1 @1 100 dur) `(f3))
+(:| note-4 4 3 (play syn1 @1 100 dur) `(g#4))
+
+(:| note-5 4 4 (play syn1 @1 100 dur) `(c4))
+(:| note-6 8 5 (play syn1 @1 100 dur) `(c#4))
+
+; ##########################The visuals ##################
+
+; first - set up osc connection with js after loaded sketch.js file on web browser
+(define (osc-receive-handler timestamp address . args)
+  (println 'osc-receive-handler address '-> args))
+
+(io:osc:start-server 8000 "osc-receive-handler")
+
+; then - below are different parameters can be changed to present different visuals. i'll provide description one by one 
+; these parameters are start, image, pixels, disolve, drum, dynamic, drum&dynamic, shrink, who
+; 1. state:  this is used for changing different scenes of visuals
+; they can be:
+; start - just default black screen
+; begin - showing the text on the screen as communication, remember to actually put text you want to say!
+(io:osc:send (now) (cons "localhost" 12000) "/state"  "start")
+(io:osc:send (now) (cons "localhost" 12000) "/test/msg"  "welcome to my work - sunset inspo" )
+; image - showing the sunset picture;
+(io:osc:send (now) (cons "localhost" 12000) "/state"  "image")
+; pixels - pixeling images as different visuals
+(io:osc:send (now) (cons "localhost" 12000) "/state"  "pixels")
+; disolve - make images like dissolution, it additionally requires flag set to 1 first 
+(io:osc:send (now) (cons "localhost" 12000) "/flag" 1)
+(io:osc:send (now) (cons "localhost" 12000) "/state"  "disolve")
+; drum - provides a "drum effect" (circular) based on the tempo of music, this should syn with metro in music
+(define *temp* 20)
+(io:osc:send (now) (cons "localhost" 12000) "/temp"  *temp* )
+(io:osc:send (now) (cons "localhost" 12000) "/state"  "drum")
+; dynamic - provides particle visuals, which as a different representations of sunset 
+; four different parameters can be tuned in this state: vcount (vertex counts of a given shape); ccount(number of the shape); csize (size/radius of the shape); scale (the whole effect can be scaled based on the display window size). Sent these values together while in this state.
+(define *vcount* 2)
+(define *ccount* 30)
+(define *csize* 200)
+(define *scale* 100)
+(io:osc:send (now) (cons "localhost" 12000) "/state"  "shrink")
+(io:osc:send (now) (cons "localhost" 12000) "/vcount"  *vcount* )
+(io:osc:send (now) (cons "localhost" 12000) "/ccount"  *ccount* )
+(io:osc:send (now) (cons "localhost" 12000) "/csize"  *csize* )
+(io:osc:send (now) (cons "localhost" 12000) "/scale"  *scale* )
+; drum&dynamic: this state work the same like drum and dynamic, only combine them together. although these states can be set randomly by sending the state message, and it will provide interesting visuals:)
+; shrink - allows the disolve effect fades away. !Noted: this only works if you have disolve used previously.
+; who - allows different colours for dynamic related state, particularly used in collaborative performance with others. the parameter value can be 0, 1, 2.
+(io:osc:send (now) (cons "localhost" 12000) "/who" 0)
